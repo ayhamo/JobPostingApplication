@@ -1,5 +1,24 @@
 <?php
+include "../dbConnection.php";
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $query = "insert into end_user values ('{$_POST["username"]}','{$_POST["password"]}','{$_POST["fname"]}','{$_POST["lname"]}','{$_POST["servicestat"]}')";
+
+    $result = mysqli_query($conn, $query);
+
+    if ($result) {
+        echo "<script>alert('You have created a new Account successfully');
+                   </script>";
+
+    } else {
+        echo "<script>alert('An error occurred, Username already taken.') </script>";
+//                echo '<br><center> Error ' . mysqli_errno($conn) . '</center>';
+    }
+
+    mysqli_close($conn);
+
+}
 ?>
 
 <!DOCTYPE html>
@@ -7,6 +26,10 @@
 <head>
     <title>Register</title>
     <style>
+        body {
+            background-color: #e5e5e5;
+        }
+
         .error {
             color: #FF0000;
         }
@@ -24,7 +47,7 @@
         }
 
         .form {
-            background-color: #eeeeee;
+            background-color: #f6f6f6;
             padding: 1rem;
             border: 1px solid darkgray;
             border-radius: .25rem;
@@ -68,9 +91,9 @@
             <?php
             if (isset($_GET['type'])) {
                 if ($_GET['type'] == "hrr") {
-                    header("Location: hrrRegister.php");
+                    header("Location: hrrRegister.php?type=hrr");
                 } elseif ($_GET['type'] == "company") {
-                    header("Location: companyRegister.php");
+                    header("Location: companyRegister.php?type=company");   //this is to change the page on click on the selector to change register type
                 }
 
             } ?>
@@ -93,14 +116,15 @@
                                                                                        oninput="this.setCustomValidity('')">
             <br>
 
-            <label>Password<span class="error"> *</span></label>: &hairsp;&hairsp;&ensp;<input type="password" name="Password"
+            <label>Password<span class="error"> *</span></label>: &hairsp;&hairsp;&ensp;<input type="password"
+                                                                                               name="password"
                                                                                                required
                                                                                                oninvalid="this.setCustomValidity('Password Field is required')"
                                                                                                oninput="this.setCustomValidity('')">
             <br>
 
             <label>Military Service Stat</label>:
-            <select style="font-size: 15px" name="mst" required
+            <select style="font-size: 15px" name="servicestat" required
                     oninvalid="this.setCustomValidity('Service stat Field is required')"
                     oninput="this.setCustomValidity('')">>
                 <option value="" selected disabled hidden>
@@ -119,9 +143,13 @@
             </div>
             <script>
                 function clear() {
-                    document.getElementById("form").reset();
+                    document.getElementById("form").reset();  //java script to reset a form
                 }</script>
         </form>
+
+        <div style="text-align: center;"><a
+                    style="margin-top: 10px;font-family: Calibri Light,serif;  font-size: 19px;  color: #333333"
+                    href="../login.php">RETURN TO LOGIN</a></div>
     </div>
 </div>
 

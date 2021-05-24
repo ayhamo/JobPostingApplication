@@ -1,5 +1,28 @@
 <?php
+include "../dbConnection.php";
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    if(empty($_POST["euname"])) {  //and if to see if it's null for endusername or not.
+        $query = "insert into hrr values ('{$_POST["username"]}','{$_POST["password"]}','{$_POST["email"]}','{$_POST["fname"]}','{$_POST["lname"]}',null)";
+    }else
+        $query = "insert into hrr values ('{$_POST["username"]}','{$_POST["password"]}','{$_POST["email"]}','{$_POST["fname"]}','{$_POST["lname"]}','{$_POST["euname"]}')";
+
+    $result = mysqli_query($conn, $query);
+
+    if ($result) {
+        echo "<script>alert('You have created a new Account successfully');
+                   </script>";
+
+    } else{
+        echo "<script>alert('An error occurred, HRR Username already taken OR your End-User name is incorrect');
+                   </script>";
+//                echo '<br><center> Error ' . $query . "<br>" . mysqli_errno($conn) . '</center>';
+    }
+
+    mysqli_close($conn);
+
+}
 ?>
 
 <!DOCTYPE html>
@@ -7,6 +30,9 @@
 <head>
     <title>Register</title>
     <style>
+        body {
+            background-color: #e5e5e5;
+        }
         .error {
             color: #FF0000;
         }
@@ -21,7 +47,7 @@
             font-weight: bold;
         }
         .form {
-            background-color: #eeeeee;
+            background-color: #f6f6f6;
             padding: 1rem;
             border: 1px solid darkgray;
             border-radius: .25rem;
@@ -64,9 +90,9 @@
             <?php
             if(isset($_GET['type'])){
                 if($_GET['type']=="user"){
-                    header("Location: userRegister.php");
+                    header("Location: userRegister.php?type=user");    //this is to change the page on click on the selector to change register type
                 }elseif($_GET['type']=="company") {
-                    header("Location: companyRegister.php");
+                    header("Location: companyRegister.php?type=company");
                 }
 
             }
@@ -84,7 +110,7 @@
                                                                                        oninput="this.setCustomValidity('')">
             <br>
 
-            <label>Email<span class="error"> *</span></label>:&emsp;&emsp;&ensp;&ensp;<input type="text" name="email"
+            <label>Email<span class="error"> *</span></label>:&emsp;&emsp;&ensp;&ensp;<input type="email" name="email"
                                                                                              required
                                                                                              oninvalid="this.setCustomValidity('Email Field is required')"
                                                                                              oninput="this.setCustomValidity('')">
@@ -97,7 +123,7 @@
             <br>
 
             <label>Password<span class="error"> *</span></label>: &hairsp;&hairsp;&ensp;<input type="password"
-                                                                                               name="Password"
+                                                                                               name="password"
                                                                                                required
                                                                                                oninvalid="this.setCustomValidity('Password Field is required')"
                                                                                                oninput="this.setCustomValidity('')">
@@ -116,6 +142,10 @@
                     document.getElementById("form").reset();
                 }</script>
         </form>
+
+        <div style="text-align: center;"><a
+                    style="margin-top: 10px;font-family: Calibri Light,serif;  font-size: 19px;  color: #333333"
+                    href="../login.php">RETURN TO LOGIN</a></div>
     </div>
 </div>
 

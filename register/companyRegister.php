@@ -1,5 +1,27 @@
 <?php
+include "../dbConnection.php";
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    if (empty($_POST["euname"])) {
+        $query = "insert into company values ('{$_POST["cid"]}','{$_POST["name"]}','{$_POST["address"]}','{$_POST["phone"]}')";
+
+        $result = mysqli_query($conn, $query);
+
+        if ($result) {
+            echo "<script>alert('You have created a new Company Account successfully');
+                   </script>";
+
+        } else {
+            echo "<script>alert('An error occurred, CID you provided already taken.');
+                   </script>";
+//                echo '<br><center> Error ' . $query . "<br>" . mysqli_errno($conn) . '</center>';
+        }
+
+        mysqli_close($conn);
+
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -7,6 +29,9 @@
 <head>
     <title>Register</title>
     <style>
+        body {
+            background-color: #e5e5e5;
+        }
         .error {
             color: #FF0000;
         }
@@ -21,7 +46,7 @@
             font-weight: bold;
         }
         .form {
-            background-color: #eeeeee;
+            background-color: #f6f6f6;
             padding: 1rem;
             border: 1px solid darkgray;
             border-radius: .25rem;
@@ -67,9 +92,9 @@
             <?php
             if(isset($_GET['type'])){
                 if($_GET['type']=="user"){
-                    header("Location: userRegister.php");
+                    header("Location: userRegister.php?type=user");
                 }elseif($_GET['type']=="hrr"){
-                    header("Location: hrrRegister.php");
+                    header("Location: hrrRegister.php?type=hrr");    //this is to change the page on click on the selector to change register type
                 }
 
             }
@@ -105,6 +130,11 @@
                     document.getElementById("form").reset();
                 }</script>
         </form>
+
+        <div style="text-align: center;"><a
+                    style="margin-top: 10px;font-family: Calibri Light,serif;  font-size: 19px;  color: #333333"
+                    href="../login.php">RETURN TO LOGIN</a></div>
+
     </div>
 </div>
 
