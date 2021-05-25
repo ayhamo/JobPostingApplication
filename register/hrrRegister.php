@@ -3,9 +3,9 @@ include "../dbConnection.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    if(empty($_POST["euname"])) {  //and if to see if it's null for endusername or not.
+    if (empty($_POST["euname"])) {  //and if to see if it's null for endusername or not.
         $query = "insert into hrr values ('{$_POST["username"]}','{$_POST["password"]}','{$_POST["email"]}','{$_POST["fname"]}','{$_POST["lname"]}',null)";
-    }else
+    } else
         $query = "insert into hrr values ('{$_POST["username"]}','{$_POST["password"]}','{$_POST["email"]}','{$_POST["fname"]}','{$_POST["lname"]}','{$_POST["euname"]}')";
 
     $result = mysqli_query($conn, $query);
@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "<script>alert('You have created a new Account successfully');
                    </script>";
 
-    } else{
+    } else {
         echo "<script>alert('An error occurred, HRR Username already taken OR your End-User name is incorrect');
                    </script>";
 //                echo '<br><center> Error ' . $query . "<br>" . mysqli_errno($conn) . '</center>';
@@ -33,25 +33,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         body {
             background-color: #e5e5e5;
         }
+
         .error {
             color: #FF0000;
         }
+
         .parent {
             font-family: sans-serif;
             display: flex;
             justify-content: center;
         }
+
         .main {
             margin-top: 70px;
             font-size: 120%;
             font-weight: bold;
         }
+
         .form {
             background-color: #f6f6f6;
             padding: 1rem;
             border: 1px solid darkgray;
             border-radius: .25rem;
         }
+
         .form > input {
             margin-bottom: 8px;
             background: #fff;
@@ -60,6 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             height: 22px;
 
         }
+
         .form #button {
             background-color: white;
             border-radius: .25rem;
@@ -88,10 +94,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <form id="form" class="form" method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
             <?php
-            if(isset($_GET['type'])){
-                if($_GET['type']=="user"){
+            if (isset($_GET['type'])) {
+                if ($_GET['type'] == "user") {
                     header("Location: userRegister.php?type=user");    //this is to change the page on click on the selector to change register type
-                }elseif($_GET['type']=="company") {
+                } elseif ($_GET['type'] == "company") {
                     header("Location: companyRegister.php?type=company");
                 }
 
@@ -117,9 +123,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <br>
 
             <label>Username<span class="error"> *</span></label>: &hairsp;&ensp;<input type="text" name="username"
-                                                                               required
-                                                                               oninvalid="this.setCustomValidity('Username Field is required')"
-                                                                               oninput="this.setCustomValidity('')">
+                                                                                       required
+                                                                                       oninvalid="this.setCustomValidity('Username Field is required')"
+                                                                                       oninput="this.setCustomValidity('')">
             <br>
 
             <label>Password<span class="error"> *</span></label>: &hairsp;&hairsp;&ensp;<input type="password"
@@ -128,7 +134,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                                                                oninvalid="this.setCustomValidity('Password Field is required')"
                                                                                                oninput="this.setCustomValidity('')">
             <br>
-            
+
             <label>End-User name</label>: <input type="text" name="euname" size="16">
 
             <br><br>
@@ -143,8 +149,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }</script>
         </form>
 
-        <div style="text-align: center;"><a
-                    style="margin-top: 10px;font-family: Calibri Light,serif;  font-size: 19px;  color: #333333"
+        <div style="margin-top: 15px;text-align: center;"><a
+                    style="font-family: Calibri Light,serif;  font-size: 19px;  color: #333333"
                     href="../login.php">RETURN TO LOGIN</a></div>
     </div>
 </div>

@@ -147,8 +147,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }</script>
         </form>
 
-        <div style="text-align: center;"><a
-                    style="margin-top: 10px;font-family: Calibri Light,serif;  font-size: 19px;  color: #333333"
+        <div style="margin-top: 15px;text-align: center;"><a
+                    style="font-family: Calibri Light,serif;  font-size: 19px;  color: #333333"
                     href="../login.php">RETURN TO LOGIN</a></div>
     </div>
 </div>

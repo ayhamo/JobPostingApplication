@@ -1,26 +1,37 @@
+
 <?php
 include "dbConnection.php";
-
+session_start();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
     if ($_POST['logtype'] == 'e'){     //change query depending on selector answer
-        $query = "insert into end_user values ('{$_POST["username"]}','{$_POST["password"]}','{$_POST["fname"]}','{$_POST["lname"]}','{$_POST["servicestat"]}')";
+        $query = "select e.username,e.passwrd from end_user e where e.username = '$username' AND e.passwrd = '$password'";
     } elseif ($_POST['logtype'] == 'h'){
-
+        $query = "select h.username,h.passwrd from hrr h where h.username = '$username' AND h.passwrd = '$password'";
     }elseif ($_POST['logtype'] == 'c'){
-
+        $query = "select c.cid,c.phone from company c where c.cid = '$username' AND c.phone = '$password'";
     }
-
-    $query = "insert into end_user values ('{$_POST["username"]}','{$_POST["password"]}','{$_POST["fname"]}','{$_POST["lname"]}','{$_POST["servicestat"]}')";
 
     $result = mysqli_query($conn, $query);
 
     if ($result) {
-        echo "<script>alert('You have created a new Account successfully');
-                   </script>";
+        if (mysqli_num_rows($result)==1){
+            if ($_POST['logtype'] == 'e'){
 
+            }elseif ($_POST['logtype'] == 'h'){
+
+            }elseif ($_POST['logtype'] == 'c'){
+                $_SESSION['cid'] = $username;
+                header("Location: companyPage.php");
+            }
+        }else{
+            echo "<script>alert('Oops! One of your Credentials is wrong, Please Try again.') </script>";
+        }
     } else {
-        echo "<script>alert('An error occurred, Username already taken.') </script>";
+        echo "<script>alert('Oops! Something went wrong. Please try again later.') </script>";
 //                echo '<br><center> Error ' . mysqli_errno($conn) . '</center>';
     }
 
@@ -97,11 +108,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                        oninput="this.setCustomValidity('')">
                 <br><br>
 
-                <select style="height: 35px;;font-size: 22px" name="logtype" required              <!-- this selector is to specify the account type to differencing company-->
-                        oninvalid="this.setCustomValidity('Select which account type you wish to login')"<!-- from enduser-hrr-end user, and to make query for us easier-->
+                <!-- this selector is to specify the account type to differencing company-->
+                <!-- from enduser-hrr-end user, and to make query for us easier and to redirect to correct page-->
+                <select style="height: 35px;;font-size: 22px" name="logtype" required
+                        oninvalid="this.setCustomValidity('Select which account type you wish to login')"
                         oninput="this.setCustomValidity('')">>
                     <option value="" selected disabled hidden>
-                        Select One
+                        Select Account Type
                     </option>
                     <option value="e">End-User Account</option>
                     <option value="h">HRR Account</option>
