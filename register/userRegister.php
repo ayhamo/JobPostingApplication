@@ -9,6 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($result) {
         echo "<script>alert('You have created a new Account successfully');
+        window.location.href = '../login.php';
                    </script>";
 
     } else {

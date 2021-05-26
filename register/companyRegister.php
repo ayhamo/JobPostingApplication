@@ -10,6 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($result) {
             echo "<script>alert('You have created a new Company Account successfully');
+            window.location.href = '../login.php';
                    </script>";
 
         } else {
@@ -131,7 +132,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <br>
 
             <div style="text-align: center;">
-                <input id="button" type="submit" value="Create Contact">
+                <input id="button" type="submit" value="Create Company">
                 <input style="width: 100px;margin-left: 15px" id="button" type="reset" onclick="clear()" value="Clear">
             </div>
             <script>
