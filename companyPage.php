@@ -2,14 +2,13 @@
 session_start();
 include "dbConnection.php";
 
-//if ($_SESSION['cid'] == null) {
-//    echo "<script>alert('An error occurred, Please Try to re-Login');
-//    window.location.href = 'login.php';
-//                   </script>";
-//    exit(1);
-//}
+if ($_SESSION == null) {
+    echo "<script>alert('An error occurred, Please Try to re-Login');
+    window.location.href = 'login.php';
+                   </script>";
+    exit(1);
+}
 
-print_r($_SESSION);
 $cid = $_SESSION['cid'];
 
 
@@ -23,23 +22,69 @@ $name = $info['name'];
 $address = $info['address'];
 $phone = $info['phone'];
 
-$string = "";
+$string = "Welcome (≧∇≦)ﾉ";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if ($_POST['type'] == 'hrrname'){
+    if ($_POST['buttontype'] == 'hrrname'){
         $query = "select distinct h.fname, h.lname from hrr h, job_posting j, company c where h.username = j.hrr_username and c.cid = j.comp_cid and c.name like '$name'";
-    }elseif ($_POST['type'] == 'compposting'){
+        $string = "HRR's names that posted A job <br>Posting for  " . $name . " Company<br><br>";
+    }elseif ($_POST['buttontype'] == 'compposting'){
+        $query = "select j.description,j.salary,j.contract_type,j.jid from job_posting j where j.comp_cid = $cid";
 
+        $numberResult = mysqli_query($conn, "select count(*) from job_posting j where j.comp_cid = $cid");
+        $string = $name . " Job Postings<br> There is " . $total = mysqli_fetch_array($numberResult)[0] . "  Job postings that the company has<br><br>";
+    }elseif ($_POST['buttontype'] == 'numappliposting'){
+        $query = "select j.jid,count(*) as count from application a join job_posting j on a.jid = j.jid where j.comp_cid = $cid group by j.jid";
+        $string = "Number of Applications for each posting <br>&nbsp";
+    }elseif ($_POST['buttontype'] == 'unemuser'){
+        $query = "select e.username from end_user E where E.username not in (select distinct username from eu_employer) 
+        and e.username in (select a.username from application a join job_posting j on a.jid = j.jid where j.comp_cid = $cid)";
+        $string = "Unemployed End-Users usernames <br>who applied for a job in the company<br>&nbsp";
+    }elseif ($_POST['buttontype'] == 'longuser'){
+        $query = "select e.username from eu_employer as e  where e.beginDate = (select min(beginDate) from eu_employer) 
+                  and e.username in (select a.username from application a join job_posting j on a.jid = j.jid where j.comp_cid = $cid)";
+        $string = "End-Users usernames who applied for a job and<br> worked for the longest period in the same company<br>&nbsp";
+    }elseif ($_POST['buttontype'] == 'numappliuser'){
+        $query = "select a.username,count(*) as count from application a join job_posting j on a.jid = j.jid where j.comp_cid = $cid group by a.username";
+        $string = "Number of applications for each End-User<br> Who applied for a job in this company<br>&nbsp";
+    }elseif ($_POST['buttontype'] == 'maxuserexp'){
+        $query = "select username from (select sum(endDate - beginDate) as exp, username from employment_history group by username) as e where e.exp >= 
+                  all (select sum(endDate - beginDate) from employment_history group by username) and username in 
+                  (select a.username from application a join job_posting j on a.jid = j.jid where j.comp_cid = $cid)";
+        $string = "Usernames of whom applied for a<br> job and has maximum experience<br>&nbsp";
+    }elseif ($_POST['buttontype'] == 'internship'){
+        $query = "select j.jid,j.description from (job_posting J natural join internshipJobPosting J1) 
+                  join company C on J.comp_cid = C.cid where C.cid = $cid";
+        $string = "All Internship Postings<br>&nbsp";
     }
 
     $result = mysqli_query($conn, $query);
+
     if (mysqli_num_rows($result) != 0) {
         while ($info = mysqli_fetch_array($result)) {
-            $string .= "<li>" . $info['fname'] . ', ' . $info['lname'] . "</li><br>";
-//            $string .= "<li><a href='" . 'listAllDetails.php?fname=' . $info['fname'] . '&' . 'lname=' . $info['lname'] . "'>" . $info['lname'] . ', ' . $info['fname'] . "</a></li><br>";
+            if ($_POST['buttontype'] == 'hrrname') {
+                $string .= "<li style='list-style: none;'>" . $info['fname'] . ' , ' . $info['lname'] . "</li>";
+            }elseif ($_POST['buttontype'] == 'compposting'){
+                $string .= "<li style='list-style: none;'>JID: " . $info['jid'] . " , " . $info['description'] . ", " . $info['salary'] . "$, Contract: " . $info['contract_type'] . "</li>";
+            }elseif ($_POST['buttontype'] == 'numappliposting'){
+                $string .= "<li>JID: " . $info['jid'] . " has " . $info['count'] . " Applicatoin/s.</li>";
+            }elseif ($_POST['buttontype'] == 'unemuser'){
+                $string .= "<li>" . $info['username'] . "</li>";
+            }
+            elseif ($_POST['buttontype'] == 'longuser'){
+                $string .= "<li>" . $info['username'] . "</li>";
+            }elseif ($_POST['buttontype'] == 'numappliuser'){
+                $string .= "<li style='list-style: none;'>User '" . $info['username'] . "' has applied for " . $info['count'] . " Applicatoins offerd</li>";
+            }
+            elseif ($_POST['buttontype'] == 'maxuserexp'){
+                $string .= "<li>" . $info['username'] . "</li>";
+            }
+            elseif ($_POST['buttontype'] == 'internship'){
+                $string .= "<li style='list-style: none;'><a href='" . 'internshipDetails.php?jid=' . $info['jid'] . "'>" . "JID: " .$info['jid'] . ' , ' . $info['description'] . "</a></li>";
+            }
         }
     } else
-        $string = "No results found";
+        $string .= "<br>No results found";
 }
 ?>
 
@@ -84,6 +129,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin-right: 7px;
             border-left: solid #000000;
         }
+        .resultBox{
+            margin-top: 25px;
+            font-size: 30px;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+        li{
+            line-height: 40px
+        }
     </style>
 </head>
 <body>
@@ -100,12 +155,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <div style="margin-top: 40px;margin-left: 30px">
-        <button class="logout" type="button" onclick="<?php session_destroy(); ?>location.href='login.php'"> LOGOUT
+        <button class="logout" type="button" onclick="location.href='logoutLanding.php'"> LOGOUT
         </button>
     </div>
 </div>
 
-<div style="font-weight: bold;font-family: 'Rockwell Nova Light',serif;font-size: 25px;text-align: center;margin-top: 30px">
+<div style="font-weight: bold;font-family: 'Rockwell Nova Light',serif;font-size: 25px;text-align: center;margin-top: 30px;margin-right: 20px">
     Company Control Panel
 </div>
 <div style="font-size: 20px;text-align: center;margin-top: 8px;margin-left: 210px">-------------------- End-User Who
@@ -113,22 +168,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </div>
 
 <div class="parent" style="margin-top: 10px">
-    <form name="type"class="form" method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
-        <button value="hrrname">HRR Name That <br>Posted Jobs</button>
-        <button value="compposting">Company's <br>Job Postings</button>
-        <button>Applications <br>to each posting</button>
-        <span class="vertical"></span>
-        <button>unemployed<br>end-users</button>
-        <button>Users who worked at the same<br> company for the longest period</button>
-        <button>number of applications<br>for each users</button>
-        <button>Display user with <br>maximum experience</button>
-        <span class="vertical"></span>
-        <button>Display internship<br>postings</button>
+    <form class="form" method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
+        <button name="buttontype" value="hrrname">HRR Names <br>That Posted Jobs</button>
+        <button name="buttontype" value="compposting">Company's <br>Job Postings</button>
+        <button name="buttontype" value="numappliposting">Applications <br>to each posting</button>
+        <span   class="vertical"></span>
+        <button name="buttontype" value="unemuser">List unemployed<br>end-users</button>
+        <button name="buttontype" value="longuser">Users who worked at the same<br> company for the longest period</button>
+        <button name="buttontype" value="numappliuser">number of applications<br>for each users</button>
+        <button name="buttontype" value="maxuserexp">Display users with <br>maximum experience</button>
+        <span   class="vertical"></span>
+        <button name="buttontype" value="internship">Display internship<br>postings</button>
     </form>
-
-    <?php echo $string ?>
-
 </div>
+
+<label class="resultBox">
+    <?php echo $string ?>
+</label>
 
 </body>
 </html>
