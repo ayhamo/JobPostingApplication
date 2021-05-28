@@ -26,9 +26,8 @@ $string = "Welcome (≧∇≦)ﾉ";
 
 //all buttons functionality using if
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if ($_POST['buttontype'] == 'partsummerjob') {
-//        $_SESSION['cid'] = $username;
-//        header("Location: companyPage.php");
+    if ($_POST['buttontype'] == 'alljob') {
+        $query = "select jid, description, salary from job_posting";
     }
 
     $result = mysqli_query($conn, $query);
@@ -49,56 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html>
 <head>
     <title>HRR Control Page</title>
-    <style>
-        body {
-            background-color: #e5e5e5;
-        }
-
-        .parent {
-            font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            background: transparent
-            height: 100%;
-            width: 100%;
-
-        }
-
-        .main {
-            margin-top: 25px;
-            margin-left: 80px;
-            font-size: 120%;
-        }
-
-        .logout {
-            font-family: serif;
-            font-size: 16px;
-            color: #ffffff;
-            min-width: 160px;
-            height: 55px;
-            background-color: #333333;
-            border-radius: 31px;
-        }
-
-        .vertical {
-            padding-bottom: 15px;
-            margin-left: 7px;
-            margin-right: 7px;
-            border-left: solid #000000;
-        }
-
-        .resultBox {
-            margin-top: 25px;
-            font-size: 30px;
-            display: flex;
-            flex-direction: column;
-            text-align: center;
-        }
-
-        li {
-            line-height: 40px
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="parent">

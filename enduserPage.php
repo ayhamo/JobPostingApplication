@@ -3,7 +3,7 @@ session_start();
 include "dbConnection.php";
 
 //prevent any unauthorized login and in case of fail, it returns to logout page
-if(!isset($_SESSION['username'])){
+if (!isset($_SESSION['username'])) {
     echo "<script>alert('An error occurred, Please Try to re-Login');
     window.location.href = 'logoutLanding.php';
                    </script>";
@@ -23,11 +23,11 @@ $fname = $info['fname'];
 $lname = $info['lname'];
 
 $stat = $info['military_service_stat'];
-if ($stat == "C"){
+if ($stat == "C") {
     $stat = "Completed";
-}elseif ($stat == "E"){
+} elseif ($stat == "E") {
     $stat = "Exempt";
-}else
+} else
     $stat = "Delayed";
 
 
@@ -35,9 +35,8 @@ $string = "Welcome (≧∇≦)ﾉ";
 
 //all buttons functionality using if
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if ($_POST['buttontype'] == 'partsummerjob') {
-//        $_SESSION['cid'] = $username;
-//        header("Location: companyPage.php");
+    if ($_POST['buttontype'] == 'alljob') {
+        $query = "";
     }
 
     $result = mysqli_query($conn, $query);
@@ -58,56 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html>
 <head>
     <title>User Control Page</title>
-    <style>
-        body {
-            background-color: #e5e5e5;
-        }
-
-        .parent {
-            font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            background: transparent
-            height: 100%;
-            width: 100%;
-
-        }
-
-        .main {
-            margin-top: 25px;
-            margin-left: 80px;
-            font-size: 120%;
-        }
-
-        .logout {
-            font-family: serif;
-            font-size: 16px;
-            color: #ffffff;
-            min-width: 160px;
-            height: 55px;
-            background-color: #333333;
-            border-radius: 31px;
-        }
-
-        .vertical {
-            padding-bottom: 15px;
-            margin-left: 7px;
-            margin-right: 7px;
-            border-left: solid #000000;
-        }
-
-        .resultBox {
-            margin-top: 25px;
-            font-size: 30px;
-            display: flex;
-            flex-direction: column;
-            text-align: center;
-        }
-
-        li {
-            line-height: 40px
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="parent">
@@ -131,31 +81,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <div style="font-weight: bold;font-family: 'Rockwell Nova Light',serif;font-size: 25px;text-align: center;margin-top: 30px;margin-right: 20px">
     User Control Panel
 </div>
-<div class="parent" style="margin-top: 10px">
-    <form class="form" method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
+<div class="parent" style="margin-top: 10px;flex-direction: column;align-items: center">
+    <form style="flex-direction: row" method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
         <button name="buttontype" value="alljob">List all job<br> Postings</button>
-        <button name="buttontype" value="openjob">List open <br>Job postings</button>
+        <button name="buttontype" value="openjob">List open<br>Job postings</button>
         <span class="vertical"></span>
         <button name="buttontype" value="unemuser">Company that offers<br>highest paying jobs</button>
         <button name="buttontype" value="unemuser">Company that offers<br>highest paying jobs</button>
-        <span class="vertical"></span>
     </form>
 
-    <br/>
-    <div style="width: 100%">
-    <button  name="buttontype" onclick="showHide()">Search for part time jobs <br>during the summer in a place</button>
-    <button  name="buttontype" onclick="showHide()">List open internships for specific <br>company that allows more than 20 days</button>
+    <hr>
+    <div style="flex-direction: row">
+        <button name="buttontype" onclick="showHide('Place')">Search for part time jobs <br>during the summer in a place
+        </button>
+        <button name="buttontype" onclick="showHide('Company Name')">List open internships for specific <br>company that allows more
+            than 20 days
+        </button>
     </div>
-    <br/>
-    <form id="searchForm" class="form" method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
-        <input style="margin-top: 5px;" name="buttontype"  type="search" placeholder="Input Place/ Company Name" required>
+    <hr>
+    <form id="searchForm" class="form" style="display: none" method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
+        <input style="margin-top: 5px;" id="child" name="buttontype" type="search"
+               required>
         <input type="submit" value="Search">
     </form>
 </div>
 
 <script>
-    function showHide() {
+    function showHide(placeholder) {
         var x = document.getElementById("searchForm");
+        var y = document.getElementById("child");
+        y.placeholder = placeholder;
         if (x.style.display === "none") {
             x.style.display = "block";
         } else {
