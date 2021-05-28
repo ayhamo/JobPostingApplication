@@ -131,9 +131,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <option value="" selected disabled hidden>
                     Select One
                 </option>
-                <option value="c">Completed</option>
-                <option value="d">Delayed</option>
-                <option value="e">Exempt</option>
+                <option value="C">Completed</option>
+                <option value="D">Delayed</option>
+                <option value="E">Exempt</option>
             </select>
 
             <br><br>

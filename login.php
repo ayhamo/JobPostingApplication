@@ -19,9 +19,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result) {
         if (mysqli_num_rows($result)==1){
             if ($_POST['logtype'] == 'e'){
-
+                $_SESSION['username'] = $username;
+                header("Location: enduserPage.php");
             }elseif ($_POST['logtype'] == 'h'){
-
+                $_SESSION['username'] = $username;
+                header("Location: hrrPage.php");
             }elseif ($_POST['logtype'] == 'c'){
                 $_SESSION['cid'] = $username;
                 header("Location: companyPage.php");
