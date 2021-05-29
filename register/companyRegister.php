@@ -108,7 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             ?>
             <label>CID<span class="error"> *</span>: &emsp;&emsp;&hairsp;&hairsp;&hairsp;&hairsp;</label><input
-                    type="text" name="cid"
+                    type="number" name="cid"
                     required
                     oninvalid="this.setCustomValidity('Company ID Field is required')"
                     oninput="this.setCustomValidity('')">
@@ -122,7 +122,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     oninput="this.setCustomValidity('')">
             <br>
 
-            <label>Phone<span class="error"> *</span></label>: &ensp;&ensp;<input type="text" name="phone"
+            <label>Phone<span class="error"> *</span></label>: &ensp;&ensp;<input type="tel" name="phone"
                                                                                   required
                                                                                   oninvalid="this.setCustomValidity('Phone Number Field is required')"
                                                                                   oninput="this.setCustomValidity('')">

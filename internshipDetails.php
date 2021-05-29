@@ -2,7 +2,7 @@
 include "dbConnection.php";
 session_start();
 //check companyPage please for explanation on this, and also if anyone tries to open the page with correct jid but not logged in.
-if(!isset($_SESSION['cid'])){
+if (!isset($_SESSION['cid'])) {
     echo "<script>alert('An error occurred, Please Try to re-Login');
     window.location.href = 'logoutLanding.php';
                    </script>";
@@ -75,11 +75,11 @@ $ctype = $info['contract_type'];
 </div>
 <br>
 <div class="main" style="display:flex;justify-content:center;margin-right: 30px;font-size: 23px">
-    <span style="font-size: 150%;font-weight: bold;"><?php  ?></span><br>
+    <span style="font-size: 150%;font-weight: bold;"><?php ?></span><br>
     <ul>
         <li>JID: <span style="margin-left: 150px"><?php echo $jid ?></span></li>
         <br>
-        <li>Description: <span style="margin-left: 80px"><?php echo $desc  ?></span></li>
+        <li>Description: <span style="margin-left: 80px"><?php echo $desc ?></span></li>
         <br>
         <li>Number Openings: <span style="margin-left: 20px"><?php echo $numop ?></span></li>
         <br>
