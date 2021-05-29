@@ -45,5 +45,20 @@ body {
 }
 
 li {
-    line-height: 40px
+    line-height: 40px;
 }
+.search{
+    font-family: serif;
+    font-size: 16px;
+    color: #ffffff;
+    min-width: 100px;
+    height: 30px;
+    background-color: #333333;
+    border-radius: 31px;
+}
+.searchbar{
+    height: 30px;
+    border-radius: 31px;
+}
+
+

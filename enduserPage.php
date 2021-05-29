@@ -35,8 +35,10 @@ $string = "Welcome (≧∇≦)ﾉ";
 
 //all buttons functionality using if
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if ($_POST['buttontype'] == 'alljob') {
-        $query = "";
+    if ($_POST['type'] == 'SEARCH') {
+        echo "wow";
+    }elseif($_POST['type'] == 'INTERNSHIP'){
+        echo "bad";
     }
 
     $result = mysqli_query($conn, $query);
@@ -45,6 +47,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (mysqli_num_rows($result) != 0) {
         while ($info = mysqli_fetch_array($result)) {
             if ($_POST['buttontype'] == 'hrrname') {
+            }elseif($_POST['buttontype'] == 'INTERNSHIP'){
+
             }
         }
     } else
@@ -58,6 +62,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <title>User Control Page</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+
+    </style>
 </head>
 <body>
 <div class="parent">
@@ -92,25 +99,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <hr>
     <div style="flex-direction: row">
-        <button name="buttontype" onclick="showHide('Place')">Search for part time jobs <br>during the summer in a place
+        <button name="buttontype" value="SEARCH" onclick="showHide(' Place','SEARCH')">Search for part time jobs <br>during the summer in a place
         </button>
-        <button name="buttontype" onclick="showHide('Company Name')">List open internships for specific <br>company that allows more
+        <button name="buttontype" value="INTERNSHIP" onclick="showHide(' Company Name','INTERNSHIP')">List open internships for specific <br>company that allows more
             than 20 days
         </button>
     </div>
     <hr>
     <form id="searchForm" class="form" style="display: none" method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
-        <input style="margin-top: 5px;" id="child" name="buttontype" type="search"
+        <input class="searchbar" style="margin-top: 5px;" id="child" type="search"
                required>
-        <input type="submit" value="Search">
+        <input class="search" id="child2" name="type" type="submit" value="Search">
     </form>
 </div>
 
 <script>
-    function showHide(placeholder) {
+    function showHide(placeholder,value) {
         var x = document.getElementById("searchForm");
         var y = document.getElementById("child");
+        var z = document.getElementById("child2");
         y.placeholder = placeholder;
+        z.value = value;
         if (x.style.display === "none") {
             x.style.display = "block";
         } else {
