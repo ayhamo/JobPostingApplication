@@ -48,19 +48,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                    </script>";
             header("Refresh:0");
         }
-    }else {
+    } else {
 
-    //building all data from sql
-    if (mysqli_num_rows($result) != 0) {
-        while ($info = mysqli_fetch_array($result)) {
-            if ($_POST['buttontype'] == "mypost") {
-                $string .= "<li style='list-style: none;'>JID " . $info['jid'] . ",  " . $info['description'] . " job for " . $info['name'] . " with openings for "
-                    . $info['numOpenings'] . " persons and opened on " . $info['openingdate'] . " with contract type " . $info['contract_type'] . " </li>";
+        //building all data from sql
+        if (mysqli_num_rows($result) != 0) {
+            while ($info = mysqli_fetch_array($result)) {
+                if ($_POST['buttontype'] == "mypost") {
+                    $string .= "<li style='list-style: none;'>JID " . $info['jid'] . ",  " . $info['description'] . " job for " . $info['name'] . " with openings for "
+                        . $info['numOpenings'] . " persons and opened on " . $info['openingdate'] . " with contract type " . $info['contract_type'] . " </li>";
+                }
             }
-        }
-    } else
-        $string .= "<br>No results found";
-}
+        } else
+            $string .= "<br>No results found";
+    }
 }
 
 ?>
@@ -119,11 +119,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <div class="parent" style="margin-top: 10px;flex-direction: column;align-items: center">
     <div style="flex-direction: row"
-    <form method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
+    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
         <button name="buttontype" value="mypost">Display my<br> Postings</button>
-        <span class="vertical"></span>
     </form>
 
+    <span class="vertical"></span>
     <button onclick="showHide()">Create new <br>Posting
     </button>
 
@@ -246,6 +246,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     function disablemindays() {
         //get the value if checkbox is checked
         if (document.getElementById("in").checked) {
+            // SET FIELD TO REQUIRED
             document.getElementById("inmin").disabled = false;
         } else if (document.getElementById("pt").checked || document.getElementById("ft").checked) {
             document.getElementById("inmin").disabled = true;
