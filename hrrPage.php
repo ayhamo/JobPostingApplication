@@ -24,6 +24,7 @@ $lname = $info['lname'];
 
 $string = "";
 $insert = false;
+$insertdouble = false;
 
 //all buttons functionality using if
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -31,14 +32,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $query = "SELECT j.jid,j.description,j.numOpenings,j.openingdate,j.contract_type,c.name FROM job_posting j 
                   join company c on j.comp_cid = c.cid where hrr_username = '$username'";
         $string = "My Postings<br>";
-        $insert = false;
-    } elseif ($_POST['buttontype'] == "Create Posting") {
+    } elseif ($_POST['buttontype'] == "Create Posting" && $_POST['internnot'] == "intnot" && $_POST['jobtype'] == 0) {
         $query = "insert into job_posting values ({$_POST['jid']},'{$_POST['desc']}',{$_POST['salary']},{$_POST['phone']},{$_POST['open']},'$username','{$_POST['date']}'
                   ,{$_POST['duration']},{$_POST['cid']},{$_POST['jobtype']},'{$_POST['conttype']}')";
         $insert = true;
+    } elseif ($_POST['buttontype'] == "Create Posting" && $_POST['jobtype'] == 1) {
+        $query = "insert into job_posting values ({$_POST['jid']},'{$_POST['desc']}',{$_POST['salary']},{$_POST['phone']},{$_POST['open']},'$username','{$_POST['date']}'
+                  ,{$_POST['duration']},{$_POST['cid']},{$_POST['jobtype']},'{$_POST['conttype']}'); insert into manager_job_posting values ({$_POST['jid']},'{$_POST['deptname']}',{$_POST['size']});";
+        $insertdouble = true;
+        $insert = true;
+    } elseif ($_POST['buttontype'] == "Create Posting" && $_POST['internnot'] == "int") {
+        $query = "insert into job_posting values ({$_POST['jid']},'{$_POST['desc']}',{$_POST['salary']},{$_POST['phone']},{$_POST['open']},'$username','{$_POST['date']}'
+                  ,{$_POST['duration']},{$_POST['cid']},{$_POST['jobtype']},'{$_POST['conttype']}'); insert into internshipjobposting values ({$_POST['jid']},{$_POST['inmin']});";
+        $insertdouble = true;
+        $insert = true;
     }
 
-    $result = mysqli_query($conn, $query);
+    if ($insertdouble) {
+        $result = mysqli_multi_query($conn, $query);
+    } else
+        $result = mysqli_query($conn, $query);
+
     if ($insert) {
         if ($result) {
             echo "<script>alert('Posting has been created successfully !');
@@ -177,17 +191,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         oninput="this.setCustomValidity('')">
         <br>
 
-        <fieldset style="text-align: center;margin-bottom: 7px;padding-bottom: 4px">Job Type<br>
+        <label>CID: </label><input type="number" name="cid" style="margin-left: 55px"
+                                   required
+                                   oninvalid="this.setCustomValidity('CID Field is required')"
+                                   oninput="this.setCustomValidity('')">
+        <br>
+
+        <fieldset onchange="disableman()" style="text-align: center;margin-bottom: 7px;padding-bottom: 4px">Job Type<br>
             <label>
-                <input type="radio" name="jobtype" id="manager" value="1" onchange="disableman()" required>
+                <input type="radio" name="jobtype" id="manager" value="1" required>
                 Manager Job</label>
 
             <label>
-                <input type="radio" name="jobtype" id="intern" value="0" onchange="disableman()">
+                <input type="radio" name="jobtype" id="intern" value="0">
                 Intern Job</label>
         </fieldset>
 
-        <fieldset onchange="disablemindays()" style="text-align: center;margin-bottom: 7px">Contract Type<br>
+        <fieldset style="text-align: center;margin-bottom: 7px">Contract Type<br>
             <label>
                 <input type="radio" name="conttype" id="ft" value="FT" required>
                 Full Time</label>
@@ -195,19 +215,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label>
                 <input type="radio" name="conttype" id="pt" value="PT">
                 Part Time</label>
-
-            <label>
-                <input type="radio" name="conttype" id="in" value="IN">
-                Internship</label>
         </fieldset>
 
-        <label>CID: </label><input type="number" name="cid" style="margin-left: 57px"
-                                   required
-                                   oninvalid="this.setCustomValidity('CID Field is required')"
-                                   oninput="this.setCustomValidity('')">
+        <fieldset onchange="disablemindays()" style="text-align: center;margin-bottom: 7px">Internship Or Job<br>
+            <label>
+                <input type="radio" name="internnot" id="int" value="int" required>
+                Internship</label>
+
+            <label>
+                <input type="radio" name="internnot" id="intnot" value="intnot">
+                Non-Internship</label>
+        </fieldset>
+
+
+        <label>Dept Name: </label><input id="managerinput" type="text" name="deptname" style="width: 70px" disabled
+                                         required>
+
+        <label>Size: </label><input id="managerinput1" type="number" name="size" style="width: 40px" disabled
+                                    required>
+
         <br>
 
-        <label>Internship Min Days: </label><input id="inmin" type="number" name="inmin" style="width: 103px" disabled required>
+        <label>Internship Min Days: </label><input id="inmin" type="number" name="inmin" style="width: 103px" disabled
+                                                   required>
         <br>
 
         <div style="text-align: center;">
@@ -235,17 +265,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         //get the value if checkbox is checked
         if (document.getElementById("manager").checked) {
             document.getElementById("pt").disabled = true;
-            document.getElementById("in").disabled = true;
-            document.getElementById("ft").checked = true;
+            document.getElementById("pt").checked = false;
+
+            document.getElementById("int").disabled = true;
+            document.getElementById("int").checked = false;
+
+            document.getElementById("managerinput").removeAttribute('disabled');
+            document.getElementById("managerinput1").removeAttribute('disabled');
         } else if (document.getElementById("intern").checked) {
             document.getElementById("pt").disabled = false;
-            document.getElementById("in").disabled = false;
             document.getElementById("ft").checked = false;
+
+            document.getElementById("int").disabled = false;
+            document.getElementById("intnot").checked = false;
+
+            document.getElementById("managerinput").setAttribute('disabled', 'true');
+            document.getElementById("managerinput1").setAttribute('disabled', 'true');
         }
     }
 
     function disablemindays() {
-        if (document.getElementById('in').checked) {
+        if (document.getElementById('int').checked) {
             document.getElementById("inmin").removeAttribute('disabled');
         } else {
             document.getElementById("inmin").setAttribute('disabled', 'true');
