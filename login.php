@@ -6,29 +6,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    if ($_POST['logtype'] == 'e'){     //change query depending on selector answer
+    if ($_POST['logtype'] == 'e') {     //change query depending on selector answer
         $query = "select e.username,e.passwrd from end_user e where e.username = '$username' AND e.passwrd = '$password'";
-    } elseif ($_POST['logtype'] == 'h'){
+    } elseif ($_POST['logtype'] == 'h') {
         $query = "select h.username,h.passwrd from hrr h where h.username = '$username' AND h.passwrd = '$password'";
-    }elseif ($_POST['logtype'] == 'c'){
+    } elseif ($_POST['logtype'] == 'c') {
         $query = "select c.cid,c.phone from company c where c.cid = '$username' AND c.phone = '$password'";
     }
 
     $result = mysqli_query($conn, $query);
 
     if ($result) {
-        if (mysqli_num_rows($result)==1){
-            if ($_POST['logtype'] == 'e'){
+        if (mysqli_num_rows($result) == 1) {
+            if ($_POST['logtype'] == 'e') {
                 $_SESSION['username'] = $username;
                 header("Location: enduserPage.php");
-            }elseif ($_POST['logtype'] == 'h'){
+            } elseif ($_POST['logtype'] == 'h') {
                 $_SESSION['username'] = $username;
                 header("Location: hrrPage.php");
-            }elseif ($_POST['logtype'] == 'c'){
+            } elseif ($_POST['logtype'] == 'c') {
                 $_SESSION['cid'] = $username;
                 header("Location: companyPage.php");
             }
-        }else{
+        } else {
             echo "<script>alert('Oops! One of your Credentials is wrong, Please Try again.') </script>";
         }
     } else {
