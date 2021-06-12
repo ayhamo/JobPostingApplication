@@ -3,7 +3,7 @@ include "../dbConnection.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    if (empty($_POST["euname"])) {
+    if (!empty($_POST["name"])) {
         $query = "insert into company values ('{$_POST["cid"]}','{$_POST["name"]}','{$_POST["address"]}','{$_POST["phone"]}')";
 
         $result = mysqli_query($conn, $query);
